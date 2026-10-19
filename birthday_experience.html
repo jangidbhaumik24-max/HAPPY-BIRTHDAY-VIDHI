@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Vidhi • Written in the Stars</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti JS -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        blushbg: '#FFF0F5',       /* Pure Soft Lavender Blush Background */
+                        softpink: '#FCE4EC',      /* Light Rose */
+                        midpink: '#F8BBD0',       /* Warm Rose Border Accent */
+                        rose: '#E91E63',          /* Deep Vibrant Rose */
+                        hotpink: '#FF1493',       /* Energetic Magenta Pink */
+                        deeprose: '#880E4F',      /* Rich Velvet Burgundy Rose */
+                        darkpink: '#4A001F',      /* Deep Contrast Text */
+                        pinkglow: 'rgba(233, 30, 99, 0.4)'
+                    },
+                    fontFamily: {
+                        cormorant: ['Cormorant Garamond', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FFF0F5;
+            color: #4A001F;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Continuous Pink Glassmorphism Styling */
+        .pink-glass {
+            background: rgba(255, 240, 245, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(248, 187, 208, 0.8);
+            box-shadow: 0 12px 35px -10px rgba(233, 30, 99, 0.15);
+        }
+
+        .pink-card {
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid #F8BBD0;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .pink-card:hover {
+            border-color: #FF1493;
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 20px 40px -12px rgba(233, 30, 99, 0.28);
+        }
+
+        /* Pulsing Glow Text */
+        .glow-pink-text {
+            text-shadow: 0 0 20px rgba(233, 30, 99, 0.45), 0 0 40px rgba(255, 20, 147, 0.25);
+        }
+
+        /* Floating Animation */
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
+        }
+        .animate-float {
+            animation: gentleFloat 5s ease-in-out infinite;
+        }
+
+        /* Candle Flame Flicker */
+        @keyframes flicker {
+            0%, 100% { transform: scale(1) rotate(-1deg); opacity: 0.95; }
+            50% { transform: scale(1.15) rotate(2deg); opacity: 1; filter: drop-shadow(0 0 18px #FF1493); }
+        }
+        .animate-flicker {
+            animation: flicker 1.2s ease-in-out infinite alternate;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 7px; }
+        ::-webkit-scrollbar-track { background: #FFF0F5; }
+        ::-webkit-scrollbar-thumb { background: #F8BBD0; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #E91E63; }
+    </style>
+</head>
+<body class="relative min-h-screen selection:bg-rose selection:text-white">
+
+    <!-- CONTINUOUS SPARKLE & STARDUST CANVAS -->
+    <canvas id="sparkleCanvas" class="fixed inset-0 pointer-events-none z-0 opacity-80"></canvas>
+
+    <!-- FLOATING NAVIGATION BAR -->
+    <nav class="fixed top-5 left-1/2 -translate-x-1/2 z-50 pink-glass px-6 py-2.5 rounded-full flex items-center gap-4 sm:gap-7 text-xs tracking-widest uppercase font-semibold text-deeprose border shadow-md">
+        <a href="#hero" class="hover:text-hotpink transition-colors"><i class="fas fa-crown text-rose mr-1"></i> Vidhi</a>
+        <span class="text-midpink">•</span>
+        <a href="#star-map" class="hover:text-hotpink transition-colors">Star Map</a>
+        <span class="text-midpink">•</span>
+        <a href="#constellations" class="hover:text-hotpink transition-colors">Constellations</a>
+        <span class="text-midpink">•</span>
+        <a href="#letter" class="hover:text-hotpink transition-colors">Letter</a>
+        <span class="text-midpink">•</span>
+        <a href="#wish" class="hover:text-hotpink transition-colors">Wish</a>
+    </nav>
+
+    <!-- SOFT MUSIC CONTROLLER BUTTON -->
+    <button onclick="toggleMusic()" id="musicBtn" class="fixed bottom-6 right-6 z-50 pink-glass px-5 py-3 rounded-full text-deeprose border-2 border-midpink shadow-xl flex items-center gap-2 text-xs font-bold uppercase tracking-wider hover:scale-105 hover:border-rose transition-all">
+        <i class="fas fa-music text-rose animate-bounce" id="musicIcon"></i>
+        <span id="musicText">🎵 Play Music</span>
+    </button>
+
+    <!-- MAIN WRAPPER -->
+    <main class="relative z-10 max-w-4xl mx-auto px-6 pt-24 pb-32">
+
+        <!-- 1. HERO HEADER SECTION -->
+        <section id="hero" class="min-h-[80vh] flex flex-col justify-center items-center text-center py-16 relative">
+            
+            <div class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-softpink border border-midpink text-rose font-bold text-xs uppercase tracking-[0.25em] mb-6 shadow-sm">
+                <i class="fas fa-sparkles text-hotpink"></i> October 20, 2002 • Written in the Stars <i class="fas fa-sparkles text-hotpink"></i>
+            </div>
+
+            <h1 class="font-cormorant text-6xl sm:text-7xl lg:text-8xl font-light leading-none mb-6 text-deeprose glow-pink-text animate-float">
+                Happy Birthday <br><span class="italic font-normal text-hotpink">Vidhi</span>
+            </h1>
+
+            <p class="font-sans text-sm sm:text-base text-darkpink/85 max-w-lg mx-auto mb-10 font-light leading-relaxed">
+                "You belong to the skies and above." A vibrant celestial journey crafted in pure pink stardust, celebrating the day you brought infinite light to this world.
+            </p>
+
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#star-map" onclick="playSoftChime(600)" class="px-8 py-3.5 rounded-full bg-gradient-to-r from-rose to-hotpink text-white text-xs uppercase tracking-widest font-semibold hover:shadow-lg hover:shadow-pinkglow transition-all duration-300 transform hover:-translate-y-0.5">
+                    Explore Your Birth Sky
+                </a>
+            </div>
+        </section>
+
+
+        <!-- 2. INTERACTIVE BIRTH-NIGHT CONSTELLATION MAP (OCTOBER 20, 2002) -->
+        <section id="star-map" class="py-20 border-t border-midpink/50">
+            <div class="text-center max-w-xl mx-auto mb-10">
+                <span class="text-xs uppercase tracking-[0.25em] text-rose font-bold">Celestial Alignment</span>
+                <h2 class="font-cormorant text-4xl sm:text-5xl font-light text-deeprose mt-2">The Night Sky On October 20, 2002</h2>
+                <p class="text-xs text-darkpink/80 mt-3 font-light leading-relaxed">
+                    Interactive plot of the actual constellations aligned over your birth night. Click or hover any glowing star node to reveal direct reflections.
+                </p>
+            </div>
+
+            <!-- Canvas Container -->
+            <div class="relative bg-[#1E000D] border-2 border-midpink rounded-3xl p-4 sm:p-8 shadow-2xl overflow-hidden flex flex-col justify-between">
+                
+                <div class="flex justify-between items-center text-xs font-mono text-softpink uppercase tracking-widest z-10 px-2">
+                    <span><i class="fas fa-star text-hotpink mr-1.5"></i> October 20, 2002 Coordinates</span>
+                    <span id="starCounter" class="text-midpink font-bold">0 / 6 Nodes Explored</span>
+                </div>
+
+                <canvas id="starMapCanvas" class="w-full h-[350px] cursor-pointer rounded-2xl my-3 border border-white/10"></canvas>
+
+                <div id="starDetailBox" class="pink-glass border border-midpink p-4 rounded-xl text-center min-h-[80px] flex flex-col justify-center items-center z-10 transition-all duration-300">
+                    <p class="text-xs text-deeprose font-medium italic"><i class="fas fa-hand-pointer mr-1.5 text-hotpink"></i> Click any sparkling node in the constellation canvas above.</p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 3. CONSTELLATION VALIDATION & MEANINGS (DIRECT SECOND-PERSON "YOU / YOUR") -->
+        <section id="constellations" class="py-20 border-t border-midpink/50">
+            <div class="text-center max-w-xl mx-auto mb-14">
+                <span class="text-xs uppercase tracking-[0.25em] text-rose font-bold">Cosmic Blueprint</span>
+                <h2 class="font-cormorant text-4xl sm:text-5xl font-light text-deeprose mt-2">How Your Stars Compliment You</h2>
+                <p class="text-xs text-darkpink/80 mt-3 font-light leading-relaxed">
+                    Every major constellation from October 20, 2002 validates the radiant energy, mind, and spirit you carry every single day.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Card 1: Libra -->
+                <div class="pink-card p-7 rounded-3xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <span class="text-[10px] font-mono text-hotpink uppercase tracking-widest font-bold">Sun Alignment</span>
+                                <h3 class="font-cormorant text-3xl text-deeprose font-medium">Libra • Balance & Beauty</h3>
+                            </div>
+                            <div class="w-10 h-10 rounded-full bg-softpink border border-midpink flex items-center justify-center text-rose text-base">
+                                <i class="fas fa-balance-scale"></i>
+                            </div>
+                        </div>
+                        <p class="text-xs text-darkpink/90 leading-relaxed font-light mb-4">
+                            <strong>You embody:</strong> An effortless grace and harmony. Your sense of beauty and warmth makes everyone around you feel balanced and centered.
+                        </p>
+                        <p class="text-xs text-darkpink/90 leading-relaxed font-light italic bg-softpink/60 p-4 rounded-2xl border border-midpink/60">
+                            "You bring a lightness that restores harmony wherever you go. The world around you truly shimmers with glitters."
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card 2: Virgo -->
+                <div class="pink-card p-7 rounded-3xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <span class="text-[10px] font-mono text-hotpink uppercase tracking-widest font-bold">Intellect & Surprises</span>
+                                <h3 class="font-cormorant text-3xl text-deeprose font-medium">Virgo • The Enchanting Mind</h3>
+                            </div>
+                            <div class="w-10 h-10 rounded-full bg-softpink border border-midpink flex items-center justify-center text-rose text-base">
+                                <i class="fas fa-sparkles"></i>
+                            </div>
+                        </div>
+                        <p class="text-xs text-darkpink/90 leading-relaxed font-light mb-4">
+                            <strong>Your mind:</strong> An incredible quarry of precision and sweet, unexpected depth. You notice details and care with a depth that is rare and beautiful.
+                        </p>
+                        <p class="text-xs text-darkpink/90 leading-relaxed font-light italic bg-softpink/60 p-4 rounded-2xl border border-midpink/60">
+                            "Your sweet, ever-surprising mind is an enchanting quarry in which it is a privilege to delve."
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card 3: Ursa Major -->
+                <div class="pink-card p-7 rounded-3xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <span class="text-[10px] font-mono text-hotpink uppercase tracking-widest font-bold">Guiding Light</span>
+                                <h3 class="font-cormorant text-3xl text-deeprose font-medium">Ursa Major • Bright Strength</h3>
+                            </div>
+                            <div class="w-10 h-10 rounded-full bg-softpink border border-midpink flex items-center justify-center text-rose text-base">
+                                <i class="fas fa-compass"></i>
+                            </div>
+                        </div>
+                        <p class="text-xs text-darkpink/90 leading-relaxed font-light mb-4">
+                            <strong>Your presence:</strong> A constant beacon of direction and warmth. You lighten up everyone and everything you interact with.
+                        </p>
+                        <p class="text-xs text-darkpink/90 leading-relaxed font-light italic bg-softpink/60 p-4 rounded-2xl border border-midpink/60">
+                            "You hold a singular place in this world—guiding dark moments with your radiant smile like the brightest star."
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card 4: Orion -->
+                <div class="pink-card p-7 rounded-3xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <span class="text-[10px] font-mono text-hotpink uppercase tracking-widest font-bold">Radiant Passion</span>
+                                <h3 class="font-cormorant text-3xl text-deeprose font-medium">Orion • Unstoppable Spirit</h3>
+                            </div>
+                            <div class="w-10 h-10 rounded-full bg-softpink border border-midpink flex items-center justify-center text-rose text-base">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                        </div>
+                        <p class="text-xs text-darkpink/90 leading-relaxed font-light mb-4">
+                            <strong>Your spirit:</strong> You carry an inner fire and unstoppable energy. Your zest for life and crazy, spontaneous nature illuminate everything you touch.
+                        </p>
+                        <p class="text-xs text-darkpink/90 leading-relaxed font-light italic bg-softpink/60 p-4 rounded-2xl border border-midpink/60">
+                            "You are by far the craziest, most radiant person—an absolute force of joy and laughter."
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- 4. HEARTFELT LETTER PANEL (EXACT USER PARAGRAPH) -->
+        <section id="letter" class="py-24 border-t border-midpink/50">
+            <div class="text-center max-w-xl mx-auto mb-10">
+                <span class="text-xs uppercase tracking-[0.25em] text-rose font-bold">Unfiltered Thoughts</span>
+                <h2 class="font-cormorant text-4xl sm:text-5xl font-light text-deeprose mt-2">A Letter For You</h2>
+            </div>
+
+            <div class="pink-glass p-8 sm:p-12 lg:p-16 rounded-3xl border-2 border-midpink max-w-3xl mx-auto shadow-2xl relative overflow-hidden text-center">
+                <div class="w-14 h-14 rounded-full bg-white border border-midpink flex items-center justify-center mx-auto text-hotpink text-xl mb-8 shadow-md animate-pulse">
+                    <i class="fas fa-heart"></i>
+                </div>
+
+                <!-- Exact Letter Paragraph -->
+                <p class="font-cormorant text-2xl sm:text-3.5xl text-deeprose font-normal leading-relaxed mb-8 italic text-left sm:text-center">
+                    "Vidhi, you are by far the craziest person ive ever come across. You are a summation of everythging ive ever let go of coming back to me in the best possible version and that is how highly I think of you. You are so radiant, the world around you shimmers with glitters. You lighten up everyone and everything you initeravt with. You are special Vidhi, not just to me but to this world. I wish everything good that exists finds its way to you and yet seem less for you deserve more. Keep smiling, always."
+                </p>
+
+                <div class="w-20 h-0.5 bg-gradient-to-r from-transparent via-rose to-transparent mx-auto my-6"></div>
+
+                <span class="text-xs font-mono uppercase tracking-widest text-hotpink font-bold block">
+                    ✨ Written For Vidhi • With All My Best Wishes ✨
+                </span>
+            </div>
+        </section>
+
+
+        <!-- 5. INTERACTIVE BIRTHDAY CANDLE & CELEBRATION WISH -->
+        <section id="wish" class="py-20 border-t border-midpink/50 text-center">
+            <div class="pink-card p-10 sm:p-14 rounded-3xl border-2 border-midpink max-w-xl mx-auto relative overflow-hidden shadow-xl">
+                
+                <span class="text-xs uppercase tracking-[0.25em] text-rose font-bold block mb-2">Celebrate Her Day</span>
+                <h2 class="font-cormorant text-4xl sm:text-5xl font-light text-deeprose mb-6">Make A Wish, Vidhi</h2>
+
+                <!-- Pink Birthday Candle -->
+                <div class="my-8 flex justify-center items-center flex-col">
+                    <div id="candleFlame" class="w-7 h-9 bg-amber-400 rounded-full blur-[1px] shadow-[0_0_25px_#FF1493] animate-flicker mb-2 transition-all duration-500"></div>
+                    <div class="w-5 h-14 bg-gradient-to-b from-pink-200 to-rose rounded-t-sm border border-midpink"></div>
+                    <div class="w-20 h-2.5 bg-midpink rounded-full mt-0.5"></div>
+                </div>
+
+                <p id="wishText" class="text-xs text-darkpink/85 font-light mb-8 max-w-md mx-auto leading-relaxed">
+                    Tap the button below to blow out your candle, send a wave of sparkles across your day, and unlock your wish.
+                </p>
+
+                <button onclick="blowCandle()" id="wishBtn" class="px-8 py-4 rounded-full bg-gradient-to-r from-rose to-hotpink text-white text-xs uppercase tracking-widest font-bold hover:scale-105 shadow-lg shadow-pinkglow transition-all">
+                    <i class="fas fa-wand-magic-sparkles mr-2"></i> Make a Wish & Blow Candle
+                </button>
+
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="mt-16 text-center text-xs text-darkpink/70 py-8 border-t border-midpink/40 font-light">
+            <p>Happy Birthday Vidhi • October 20, 2002 ✨</p>
+        </footer>
+
+    </main>
+
+    <!-- JS LOGIC -->
+    <script>
+        /* --------------------------------------------------
+         * CONSTELLATIONS DATA (OCTOBER 20, 2002) - SECOND PERSON "YOU/YOUR"
+         * -------------------------------------------------- */
+        const starPoints = [
+            { id: 1, name: "Libra Alpha", x: 0.22, y: 0.42, note: "Your Libra Sun: You embody effortless grace and harmony." },
+            { id: 2, name: "Libra Beta", x: 0.32, y: 0.32, note: "Your presence brings warmth and balance to everyone around you." },
+            { id: 3, name: "Orion's Belt", x: 0.68, y: 0.58, note: "Your unstoppable spirit and inner fire illuminate everything you touch." },
+            { id: 4, name: "Ursa Major (Dubhe)", x: 0.48, y: 0.22, note: "You are a constant beacon of strength and direction like the brightest star." },
+            { id: 5, name: "Spica (Virgo)", x: 0.16, y: 0.68, note: "Your mind is an incredible quarry of precision, care, and sweet surprises." },
+            { id: 6, name: "Polaris", x: 0.52, y: 0.10, note: "You belong to the skies and above, Vidhi." }
+        ];
+
+        const constellationLines = [
+            [1, 2], [1, 5], [3, 4], [4, 6]
+        ];
+
+        let exploredStars = new Set();
+
+        /* --------------------------------------------------
+         * STAR MAP CANVAS RENDERING
+         * -------------------------------------------------- */
+        const starCanvas = document.getElementById('starMapCanvas');
+        const starCtx = starCanvas.getContext('2d');
+        let hoveredStar = null;
+
+        function setupStarCanvas() {
+            const rect = starCanvas.parentElement.getBoundingClientRect();
+            starCanvas.width = rect.width - 32;
+            starCanvas.height = 350;
+            drawStarMap();
+        }
+
+        function drawStarMap() {
+            const w = starCanvas.width;
+            const h = starCanvas.height;
+
+            starCtx.clearRect(0, 0, w, h);
+
+            // Deep Pink Night Space Gradient
+            const bgGrad = starCtx.createRadialGradient(w/2, h/2, 30, w/2, h/2, w);
+            bgGrad.addColorStop(0, '#280012');
+            bgGrad.addColorStop(1, '#0F0006');
+            starCtx.fillStyle = bgGrad;
+            starCtx.fillRect(0, 0, w, h);
+
+            // Twinkling Stardust Background
+            for (let i = 0; i < 120; i++) {
+                const sx = (Math.sin(i * 77 + Date.now() * 0.00015) * 0.5 + 0.5) * w;
+                const sy = (Math.cos(i * 41 + Date.now() * 0.00015) * 0.5 + 0.5) * h;
+                const alpha = 0.25 + Math.sin(Date.now() * 0.002 + i) * 0.2;
+                starCtx.fillStyle = `rgba(255, 20, 147, ${alpha})`;
+                starCtx.beginPath();
+                starCtx.arc(sx, sy, (i % 5 === 0) ? 1.8 : 0.9, 0, Math.PI * 2);
+                starCtx.fill();
+            }
+
+            // Lines
+            starCtx.strokeStyle = 'rgba(255, 20, 147, 0.45)';
+            starCtx.lineWidth = 1.2;
+            starCtx.setLineDash([5, 4]);
+
+            constellationLines.forEach(([p1Id, p2Id]) => {
+                const p1 = starPoints.find(p => p.id === p1Id);
+                const p2 = starPoints.find(p => p.id === p2Id);
+                if (p1 && p2) {
+                    starCtx.beginPath();
+                    starCtx.moveTo(p1.x * w, p1.y * h);
+                    starCtx.lineTo(p2.x * w, p2.y * h);
+                    starCtx.stroke();
+                }
+            });
+            starCtx.setLineDash([]);
+
+            // Star Nodes
+            starPoints.forEach(p => {
+                const px = p.x * w;
+                const py = p.y * h;
+                const isDiscovered = exploredStars.has(p.id);
+                const isHovered = hoveredStar && hoveredStar.id === p.id;
+
+                const glowRad = isHovered ? 20 : (isDiscovered ? 14 : 9);
+                const glowGrad = starCtx.createRadialGradient(px, py, 1, px, py, glowRad);
+                glowGrad.addColorStop(0, isHovered ? '#FFFFFF' : '#FF1493');
+                glowGrad.addColorStop(1, 'transparent');
+                
+                starCtx.fillStyle = glowGrad;
+                starCtx.beginPath();
+                starCtx.arc(px, py, glowRad, 0, Math.PI * 2);
+                starCtx.fill();
+
+                starCtx.fillStyle = isHovered ? '#FFFFFF' : (isDiscovered ? '#FCE4EC' : '#E91E63');
+                starCtx.beginPath();
+                starCtx.arc(px, py, isHovered ? 5 : 3, 0, Math.PI * 2);
+                starCtx.fill();
+
+                starCtx.fillStyle = 'rgba(255, 240, 245, 0.85)';
+                starCtx.font = '10px "Plus Jakarta Sans"';
+                starCtx.fillText(p.name, px + 8, py + 3);
+            });
+        }
+
+        /* Mouse interaction */
+        starCanvas.addEventListener('mousemove', (e) => {
+            const rect = starCanvas.getBoundingClientRect();
+            const mx = e.clientX - rect.left;
+            const my = e.clientY - rect.top;
+            const w = starCanvas.width;
+            const h = starCanvas.height;
+
+            hoveredStar = starPoints.find(p => Math.hypot(p.x * w - mx, p.y * h - my) < 18);
+            starCanvas.style.cursor = hoveredStar ? 'pointer' : 'default';
+            drawStarMap();
+        });
+
+        starCanvas.addEventListener('click', () => {
+            if (hoveredStar) {
+                playSoftChime(650);
+                exploredStars.add(hoveredStar.id);
+                document.getElementById('starCounter').innerText = `${exploredStars.size} / 6 Nodes Explored`;
+
+                const box = document.getElementById('starDetailBox');
+                box.innerHTML = `
+                    <span class="text-[10px] font-mono uppercase tracking-widest text-hotpink font-bold">${hoveredStar.name}</span>
+                    <p class="font-cormorant text-xl text-deeprose italic mt-1 font-normal">"${hoveredStar.note}"</p>
+                `;
+
+                if (exploredStars.size === 6) {
+                    triggerPinkConfetti();
+                }
+                drawStarMap();
+            }
+        });
+
+        /* --------------------------------------------------
+         * CONTINUOUS SPARKLES & STARDUST BACKGROUND CANVAS
+         * -------------------------------------------------- */
+        const sparkleCanvas = document.getElementById('sparkleCanvas');
+        const spkCtx = sparkleCanvas.getContext('2d');
+        let sparkles = [];
+
+        function resizeSparkleCanvas() {
+            sparkleCanvas.width = window.innerWidth;
+            sparkleCanvas.height = window.innerHeight;
+        }
+
+        for (let i = 0; i < 75; i++) {
+            sparkles.push({
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                size: Math.random() * 2.5 + 0.5,
+                alpha: Math.random() * 0.6 + 0.2,
+                vy: - (Math.random() * 0.4 + 0.15),
+                vx: (Math.random() - 0.5) * 0.2
+            });
+        }
+
+        function drawSparkles() {
+            spkCtx.clearRect(0, 0, sparkleCanvas.width, sparkleCanvas.height);
+            sparkles.forEach(s => {
+                s.y += s.vy;
+                s.x += s.vx;
+                if (s.y < 0) s.y = sparkleCanvas.height;
+                if (s.x < 0) s.x = sparkleCanvas.width;
+                if (s.x > sparkleCanvas.width) s.x = 0;
+
+                spkCtx.fillStyle = `rgba(255, 20, 147, ${s.alpha})`;
+                spkCtx.beginPath();
+                spkCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                spkCtx.fill();
+            });
+            requestAnimationFrame(drawSparkles);
+        }
+
+        /* --------------------------------------------------
+         * CANDLE WISH INTERACTION
+         * -------------------------------------------------- */
+        function blowCandle() {
+            const flame = document.getElementById('candleFlame');
+            const wishText = document.getElementById('wishText');
+            const wishBtn = document.getElementById('wishBtn');
+
+            flame.style.transform = 'scale(0)';
+            flame.style.opacity = '0';
+
+            wishText.innerHTML = `<span class="text-hotpink font-bold text-sm">Your wish has been sent to the stars, Vidhi!</span><br>May your year ahead be as infinite, joyful, and beautiful as the skies above.`;
+            wishBtn.innerHTML = `<i class="fas fa-heart text-white mr-2"></i> Happy Birthday Vidhi! ✨`;
+
+            triggerPinkConfetti();
+            playSoftChime(523);
+            setTimeout(() => playSoftChime(659), 120);
+            setTimeout(() => playSoftChime(783), 240);
+        }
+
+        /* --------------------------------------------------
+         * AMBIENT SOUND SYNTHESIZER (WEB AUDIO API)
+         * -------------------------------------------------- */
+        let audioCtx = null;
+        let isMusicPlaying = false;
+        let ambientInterval = null;
+
+        function playSoftChime(freq = 523.25) {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.6);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.6);
+            } catch (e) {}
+        }
+
+        function toggleMusic() {
+            const musicText = document.getElementById('musicText');
+            const musicIcon = document.getElementById('musicIcon');
+
+            if (!isMusicPlaying) {
+                isMusicPlaying = true;
+                musicText.innerText = "🎵 Pause Music";
+                musicIcon.classList.remove('animate-bounce');
+
+                // Soft ambient chime sequence loop
+                const notes = [523.25, 659.25, 783.99, 1046.50, 880.00];
+                let index = 0;
+                ambientInterval = setInterval(() => {
+                    playSoftChime(notes[index % notes.length]);
+                    index++;
+                }, 1800);
+            } else {
+                isMusicPlaying = false;
+                musicText.innerText = "🎵 Play Music";
+                musicIcon.classList.add('animate-bounce');
+                if (ambientInterval) clearInterval(ambientInterval);
+            }
+        }
+
+        function triggerPinkConfetti() {
+            confetti({
+                particleCount: 100,
+                spread: 90,
+                origin: { y: 0.8 },
+                colors: ['#E91E63', '#FF1493', '#F8BBD0', '#FCE4EC'],
+                ticks: 280,
+                gravity: 0.45
+            });
+        }
+
+        /* INITIALIZATION */
+        window.addEventListener('resize', () => {
+            resizeSparkleCanvas();
+            setupStarCanvas();
+        });
+
+        window.onload = function() {
+            resizeSparkleCanvas();
+            setupStarCanvas();
+            drawSparkles();
+        };
+    </script>
+</body>
+</html>
